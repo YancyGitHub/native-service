@@ -51,7 +51,7 @@ status_t BnDemoService::onTransact(uint32_t code,const Parcel & data,Parcel * re
     {
         case ADD_NUMBER:
         {
-            CHECK_INTERFACE(ICamera, data, reply);
+            CHECK_INTERFACE(IDemoService, data, reply);
             int ret = AddNumber(data.readInt32(), data.readInt32());
             ALOGD("BpDemoService ADD_NUMBER ret:%d\n", ret);
             reply->writeInt32(ret);
@@ -59,7 +59,7 @@ status_t BnDemoService::onTransact(uint32_t code,const Parcel & data,Parcel * re
         }
         case MAX_NUMBER:
         {
-            CHECK_INTERFACE(ICamera, data, reply);
+            CHECK_INTERFACE(IDemoService, data, reply);
             int ret = MaxNumber(data.readInt32(), data.readInt32());
             ALOGD("BpDemoService MAX_NUMBER ret:%d\n", ret);
             reply->writeInt32(ret);
