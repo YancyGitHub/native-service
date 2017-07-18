@@ -1,0 +1,72 @@
+From 281331f680b01e44d7266a063fff1de4e5cb1b3b Mon Sep 17 00:00:00 2001
+From: "Chongyang.Hu" <chongyang.hu@sim.com>
+Date: Thu, 9 Feb 2017 10:02:03 +0800
+Subject: [PATCH] CB04: Add dual stream sepolicy
+
+Change-Id: Ief71eb8452383c5f76dcbff43e1938f4ba67f11e
+---
+ sepolicy/dstream.te       | 16 ++++++++++++++++
+ sepolicy/file_contexts    |  1 +
+ sepolicy/service.te       |  1 +
+ sepolicy/service_contexts |  1 +
+ 4 files changed, 19 insertions(+)
+ create mode 100644 sepolicy/dstream.te
+
+diff --git a/sepolicy/dstream.te b/sepolicy/dstream.te
+new file mode 100644
+index 0000000..2a926bd
+--- /dev/null
++++ b/sepolicy/dstream.te
+@@ -0,0 +1,16 @@
++type dstream_server, domain;
++type dstream_server_exec, exec_type, file_type;
++
++init_daemon_domain(dstream_server)
++typeattribute dstream_server mlstrustedsubject;
++
++# Perform Binder IPC to system server.
++binder_use(dstream_server)
++binder_call(dstream_server, system_server)
++binder_call(dstream_server, appdomain)
++binder_service(dstream_server)
++
++# Perform Binder IPC to mediaserver
++binder_call(dstream_server, mediaserver)
++
++allow dstream_server dstream_server_service:service_manager add;
+\ No newline at end of file
+diff --git a/sepolicy/file_contexts b/sepolicy/file_contexts
+index f1e9540..55e215b 100644
+--- a/sepolicy/file_contexts
++++ b/sepolicy/file_contexts
+@@ -164,6 +164,7 @@
+ # patchoat executable has (essentially) the same requirements as dex2oat.
+ /system/bin/patchoat    u:object_r:dex2oat_exec:s0
+ /system/bin/osd_ctrld   u:object_r:osd_ctrld_exec:s0
++/system/bin/dstream_server   u:object_r:dstream_server_exec:s0
+ 
+ #############################
+ # Vendor files
+diff --git a/sepolicy/service.te b/sepolicy/service.te
+index 90aa164..5d10ca7 100644
+--- a/sepolicy/service.te
++++ b/sepolicy/service.te
+@@ -11,3 +11,4 @@ type surfaceflinger_service,    service_manager_type;
+ type system_app_service,        service_manager_type;
+ type system_server_service,     service_manager_type;
+ type osd_ctrld_service,     service_manager_type;
++type dstream_server_service,     service_manager_type;
+diff --git a/sepolicy/service_contexts b/sepolicy/service_contexts
+index c9558c6..162464c 100644
+--- a/sepolicy/service_contexts
++++ b/sepolicy/service_contexts
+@@ -121,5 +121,6 @@ wifiscanner                               u:object_r:system_server_service:s0
+ wifi                                      u:object_r:system_server_service:s0
+ window                                    u:object_r:system_server_service:s0
+ com.sim.osd.ctrld                         u:object_r:osd_ctrld_service:s0
++com.sim.dstream                           u:object_r:dstream_server_service:s0
+ 
+ *                                         u:object_r:default_android_service:s0
+-- 
+1.9.1
+
