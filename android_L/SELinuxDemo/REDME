@@ -1,0 +1,6 @@
+
+该SELinux未在设备上验证正确性，可在运行时根据 LOG 再修改、添加配置
+抓取 SELinux LOG： adb logcat | grep avc
+
+SELinux文件目录：
+external/sepolicy

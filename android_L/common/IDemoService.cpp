@@ -23,9 +23,10 @@ public:
         Parcel reply;  
         remote()->transact(ADD_NUMBER, data, &reply);
     
+        int32_t exception = reply.readExceptionCode();
         return reply.readInt32();
     }
-    
+
     int MaxNumber(int a, int b)
     {
         ALOGD("BpDemoService MaxNumber a:%d , b:%d\n", a, b);
@@ -36,13 +37,14 @@ public:
         
         Parcel reply;  
         remote()->transact(MAX_NUMBER, data, &reply);
-    
+
+        int32_t exception = reply.readExceptionCode();
         return reply.readInt32();
     }
 
 };
 
-IMPLEMENT_META_INTERFACE(DemoService, SERVICE_NAME);
+IMPLEMENT_META_INTERFACE(DemoService, "yancy.github.nativeservice.IDemoService");
 
 
 status_t BnDemoService::onTransact(uint32_t code,const Parcel & data,Parcel * reply, uint32_t flags)
@@ -54,6 +56,7 @@ status_t BnDemoService::onTransact(uint32_t code,const Parcel & data,Parcel * re
             CHECK_INTERFACE(IDemoService, data, reply);
             int ret = AddNumber(data.readInt32(), data.readInt32());
             ALOGD("BpDemoService ADD_NUMBER ret:%d\n", ret);
+            reply->writeNoException();
             reply->writeInt32(ret);
             return NO_ERROR;
         }
@@ -62,6 +65,7 @@ status_t BnDemoService::onTransact(uint32_t code,const Parcel & data,Parcel * re
             CHECK_INTERFACE(IDemoService, data, reply);
             int ret = MaxNumber(data.readInt32(), data.readInt32());
             ALOGD("BpDemoService MAX_NUMBER ret:%d\n", ret);
+            reply->writeNoException();
             reply->writeInt32(ret);
             return NO_ERROR;
         }

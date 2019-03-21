@@ -1,0 +1,13 @@
+type nativeservice, domain;
+type nativeservice_exec, exec_type, file_type;
+
+init_daemon_domain(nativeservice)
+typeattribute nativeservice mlstrustedsubject;
+
+# Perform Binder IPC to system server.
+binder_use(nativeservice)
+binder_call(nativeservice, system_server)
+binder_call(nativeservice, appdomain)
+binder_service(nativeservice)
+
+allow nativeservice nativeservice_service:service_manager add;
